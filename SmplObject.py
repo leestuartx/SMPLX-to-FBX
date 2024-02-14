@@ -44,13 +44,13 @@ class SmplObjects(object):
 
         # For AIST naming convention
         #paths = PathFilter.filter(read_path, dance_genres=["gBR"],  dance_types=["sBM"], music_IDs=["0"])
-        paths = PathFilter.filter(read_path, dance_genres=None,  dance_types=None, music_IDs=None)
-        for path in paths:
+        #paths = PathFilter.filter(read_path, dance_genres=None,  dance_types=None, music_IDs=None)
+        for path in [read_path]:
             filename = path.split("/")[-1]
             with open(path, "rb") as fp:
                 data = pickle.load(fp)
             self.files[filename] = {"smpl_poses":data["smpl_poses"],
-                                    "smpl_trans":data["smpl_trans"] / (data["smpl_scaling"][0]*100)}
+                                    "smpl_trans":data["smpl_trans"] } #/ (data["smpl_scaling"][0]*100)
         self.keys = [key for key in self.files.keys()]
 
     def __len__(self):

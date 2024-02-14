@@ -7,8 +7,8 @@ from scipy.spatial.transform import Rotation as R
 import numpy as np
 
 try:
-    from FbxCommon import *
     from fbx import *
+    from FbxCommon import *
 except ImportError:
     print("Error: module FbxCommon failed to import.\n")
     print("Copy the files located in the compatible sub-folder lib/python<version> into your python interpreter site-packages folder.")
@@ -40,15 +40,15 @@ class FbxReadWrite(object):
         """
         lKeyIndex = 0
         lTime = FbxTime()
-        lTime.SetGlobalTimeMode(FbxTime.eFrames60) # Set to fps=60
+        lTime.SetGlobalTimeMode(FbxTime.EMode.eFrames60) # Set to fps=60
         data = np.squeeze(data)
 
         lCurve.KeyModifyBegin()
         for i in range(data.shape[0]):
-            lTime.SetFrame(i, FbxTime.eFrames60)
+            lTime.SetFrame(i, FbxTime.EMode.eFrames600)
             lKeyIndex = lCurve.KeyAdd(lTime)[0]
             lCurve.KeySetValue(lKeyIndex, data[i])
-            lCurve.KeySetInterpolation(lKeyIndex, FbxAnimCurveDef.eInterpolationCubic)
+            lCurve.KeySetInterpolation(lKeyIndex, FbxAnimCurveDef.EInterpolationType.eInterpolationCubic)
         lCurve.KeyModifyEnd()
 
     def addAnimation(self, pkl_filename:str, smpl_params:Dict, verbose:bool = False):
@@ -58,7 +58,7 @@ class FbxReadWrite(object):
         lGlobalSettings = lScene.GetGlobalSettings()
         if verbose==True:
             print ("Before time mode:{}".format(lGlobalSettings.GetTimeMode()))
-        lGlobalSettings.SetTimeMode(FbxTime.eFrames60)
+        lGlobalSettings.SetTimeMode(FbxTime.EMode.eFrames60)
         if verbose==True:
             print ("After time mode:{}".format(lScene.GetGlobalSettings().GetTimeMode()))
 
@@ -124,12 +124,9 @@ class FbxReadWrite(object):
         else:
             print ("Failed to write {}, {}".format(name, "z"))
 
-    def writeFbx(self, write_base:str, filename:str):
-        if os.path.isdir(write_base) == False:
-            os.makedirs(write_base, exist_ok=True)
-        write_path = os.path.join(write_base, filename.replace(".pkl", ""))
+    def writeFbx(self, write_path:str):
         print ("Writing to {}".format(write_path))
-        lResult = SaveScene(self.lSdkManager, self.lScene, write_path)
+        lResult = SaveScene(self.lSdkManager, self.lScene, write_path, -1, True)
 
         if lResult == False:
             raise Exception("Failed to write to {}".format(write_path))
