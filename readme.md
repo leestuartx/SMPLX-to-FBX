@@ -2,15 +2,22 @@
 
 ![](Imgs/teaser.gif)
 
-Actualizing SMPL->fbx in fork plus adding support for SMPL-X.
+Actualizing SMPL -> fbx tools in fork plus adding support for SMPL-X.
 Work in progress.
 Readme will be updated with progress.
 
+## Environment
+1. Install Python 3.10.
+2. Install [Python FBX SDK 2020.3.4](https://help.autodesk.com/view/FBX/2020/ENU/?guid=FBX_Developer_Help_scripting_with_python_fbx_installing_python_fbx_html).
+3. `pip install -r requirements.txt`
+
+### Environment Notes
+1. [FBX SDK Page](https://aps.autodesk.com/developer/overview/fbx-sdk). There are links floating in internet leading to outdated instructions about FBX SDK setup. Be aware of that, check address row for dates and sdk version.
+2. If you want to get SDK working with Python version other than 3.10, download FBX Python Bindings SDK and see readme.txt there.
+
 ## Steps
-1. Install [Python FBX](https://download.autodesk.com/us/fbx/20112/fbx_sdk_help/index.html?url=WS1a9193826455f5ff453265c9125faa23bbb5fe8.htm,topicNumber=d0e8312).
 1. Download the [SMPL fbx model](https://smpl.is.tue.mpg.de) for unity. Keep the male model `SMPL_m_unityDoubleBlends_lbs_10_scale5_207_v1.0.0.fbx`.
-2. `pip install -r requirements.txt`
-3. Here's the file structure:
+2. Here's the file structure:
     ```
     <root>
     |--Convert.py
@@ -22,7 +29,7 @@ Readme will be updated with progress.
     |  |--SMPL_m_unityDoubleBlends_lbs_10_scale5_207_v1.0.0.fbx
     |--<output_path>/
     ```
-4. `python3 Convert.py --input_pkl_base <pkl_path> --fbx_source_path <fbx_path>/SMPL_m_unityDoubleBlends_lbs_10_scale5_207_v1.0.0.fbx --output_base <output_path>` to start converting.
+3. `python3 Convert.py --input_pkl_base <pkl_path> --fbx_source_path <fbx_path>/SMPL_m_unityDoubleBlends_lbs_10_scale5_207_v1.0.0.fbx --output_base <output_path>` to start converting.
 ## What's inside the pkl file?
 A pkl file contains a dictionary with two keys: `smpl_poses` and `smpl_trans`. There's a sample pkl file in `./Pkls/sample.pkl`.
 * `Dict["smpl_poses"]` : A `(N, 72)` ndarray, where `N` is the frame number.
