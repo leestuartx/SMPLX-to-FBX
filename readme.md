@@ -14,6 +14,7 @@ Readme will be updated with progress.
 ### Environment Notes
 1. [FBX SDK Page](https://aps.autodesk.com/developer/overview/fbx-sdk). There are links floating in internet leading to outdated instructions about FBX SDK setup. Be aware of that, check address row for dates and sdk version.
 2. If you want to get SDK working with Python version other than 3.10, download FBX Python Bindings SDK and see readme.txt there.
+3. If you have Python FBX SDK working in command line (global env), but not working in virtual env (for example for PyCharm IDE) - you can it by copying manually `fbx*` folder and `fbx*.pyd` file from global site-packages to venv site-packages.
 
 ## Steps
 1. Download the [SMPL fbx model](https://smpl.is.tue.mpg.de) for unity. Keep the male model `SMPL_m_unityDoubleBlends_lbs_10_scale5_207_v1.0.0.fbx`.
