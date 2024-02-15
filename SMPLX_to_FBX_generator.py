@@ -177,15 +177,34 @@ def CreateCubikNahuy(pSdkManager, pName):
     lNode.SetNodeAttribute(lMesh)
     lNode.SetShadingMode(FbxNode.EShadingMode.eTextureShading)
     return lNode
-def generateFBXfromSMPLX(sdkManager:FbxManager):
+
+def CreateChelikNahuy(pSdkManager, verts:np.ndarray, faces:np.ndarray, pName):
+    lMesh = FbxMesh.Create(pSdkManager, pName)
+
+    lMesh.InitControlPoints(verts.shape[0])
+    for i in range(verts.shape[0]):
+        point = FbxVector4(verts[i][0], verts[i][1], verts[i][2])
+        lMesh.SetControlPointAt(point, i)
+
+    for i in range(faces.shape[0]):
+        lMesh.BeginPolygon(-1, -1, False)
+
+        lMesh.AddPolygon(faces[i][0])
+        lMesh.AddPolygon(faces[i][1])
+        lMesh.AddPolygon(faces[i][2])
+
+        lMesh.EndPolygon()
+
+    lNode = FbxNode.Create(pSdkManager, pName)
+    lNode.SetNodeAttribute(lMesh)
+    lNode.SetShadingMode(FbxNode.EShadingMode.eTextureShading)
+    return lNode
+def generateFBXfromSMPLX(sdkManager:FbxManager, verts:np.ndarray, faces:np.ndarray):
     lScene = FbxScene.Create(sdkManager, "")
 
-    # create the node containing the mesh
-    #lNode = FbxNode.Create(lScene, "GeneratedFbxChelikNode")
-    #lMesh = FbxMesh.Create(sdkManager, "ChelikMesh")
-    #lNode.SetNodeAttribute(lMesh)
-    cubeNode = CreateCubikNahuy(sdkManager, "cubiknahuy")
+    #cubeNode = CreateCubikNahuy(sdkManager, "cubiknahuy")
+    chelik = CreateChelikNahuy(sdkManager, verts, faces, "chelik")
     lRootNode = lScene.GetRootNode()
-    lRootNode.AddChild(cubeNode)
+    lRootNode.AddChild(chelik)
 
     return lScene
