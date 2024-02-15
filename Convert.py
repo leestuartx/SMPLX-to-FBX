@@ -10,6 +10,7 @@
 
 from FbxReadWriter import FbxReadWrite
 from SmplObject import SmplObjects
+from SMPLX_to_FBX_generator import generateFBXfromSMPLX
 import argparse
 import tqdm
 
@@ -31,8 +32,10 @@ if __name__ == "__main__":
     for pkl_name, smpl_params in tqdm.tqdm(smplObjects):
         try:
             fbxReadWrite = FbxReadWrite(fbx_source_path)
+            sourceScene = fbxReadWrite.lScene
+            generatedChelik = generateFBXfromSMPLX(fbxReadWrite.lSdkManager)
             # fbxReadWrite.addAnimation(pkl_name, smpl_params)
-            fbxReadWrite.writeFbx(output_base)
+            fbxReadWrite.writeFbx(generatedChelik, output_base)
             fbxReadWrite.destroy()
         except Exception as e:
             print("Something went wrong while opening or writing FBX")

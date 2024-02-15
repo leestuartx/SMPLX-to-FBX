@@ -1,24 +1,8 @@
-
-import sys
 from typing import Dict
 from SmplObject import SmplObjects
-import os
 from scipy.spatial.transform import Rotation as R
 import numpy as np
-
-try:
-    from fbx import *
-    from FbxCommon import *
-except ImportError:
-    print("Error: module FbxCommon failed to import.\n")
-    print("Copy the files located in the compatible sub-folder lib/python<version> into your python interpreter site-packages folder.")
-    import platform
-    if platform.system() == 'Windows' or platform.system() == 'Microsoft':
-        print('For example: copy ..\\..\\lib\\Python27_x64\\* C:\\Python27\\Lib\\site-packages')
-    elif platform.system() == 'Linux':
-        print('For example: cp ../../lib/Python27_x64/* /usr/local/lib/python2.7/site-packages')
-    elif platform.system() == 'Darwin':
-        print('For example: cp ../../lib/Python27_x64/* /Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages')
+from FbxCommon import *
 
 class FbxReadWrite(object):
     def __init__(self, fbx_source_path):
@@ -124,10 +108,9 @@ class FbxReadWrite(object):
         else:
             print ("Failed to write {}, {}".format(name, "z"))
 
-    def writeFbx(self, write_path:str):
+    def writeFbx(self, scene: FbxScene, write_path:str):
         print ("Writing to {}".format(write_path))
-        lResult = SaveScene(self.lSdkManager, self.lScene, write_path, -1, True)
-
+        lResult = SaveScene(self.lSdkManager, scene, write_path, -1, True)
         if lResult == False:
             raise Exception("Failed to write to {}".format(write_path))
 

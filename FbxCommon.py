@@ -1,5 +1,9 @@
-from fbx import *
 import sys
+
+try:
+    from fbx import *
+except Exception as e:
+    print("Error: Fbx Sdk failed to import.\n")
 
 def InitializeSdkObjects():
     # The first thing to do is to create the FBX SDK manager which is the 
