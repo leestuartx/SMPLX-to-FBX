@@ -59,8 +59,9 @@ if __name__ == "__main__":
         faces = smplxBodyModel.faces
         joints = model_output.joints[0].detach().numpy()
         bonesHierarchy = smplxBodyModel.parents
+        skinWeights = smplxBodyModel.lbs_weights
 
-        generatedChelik = generateFBXfromSMPLX(fbxReadWrite.lSdkManager, verts, faces, joints, bonesHierarchy)
+        generatedChelik = generateFBXfromSMPLX(fbxReadWrite.lSdkManager, verts, faces, skinWeights, joints, bonesHierarchy)
         # fbxReadWrite.addAnimation(pkl_name, smpl_params)
         fbxReadWrite.writeFbx(generatedChelik, output_base) #generatedChelik #fbxReadWrite.lScene
         fbxReadWrite.destroy()

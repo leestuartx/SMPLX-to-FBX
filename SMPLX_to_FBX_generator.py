@@ -7,28 +7,7 @@ SMPLX_JOINT_NAMES = [
 ]
 
 fbxExportScale = 100
-
-def CreateHumanMesh(pSdkManager, verts:np.ndarray, faces:np.ndarray, pName):
-    lMesh = FbxMesh.Create(pSdkManager, pName)
-
-    lMesh.InitControlPoints(verts.shape[0])
-    for i in range(verts.shape[0]):
-        point = FbxVector4(verts[i][0], verts[i][1], verts[i][2]) * fbxExportScale
-        lMesh.SetControlPointAt(point, i)
-
-    for i in range(faces.shape[0]):
-        lMesh.BeginPolygon(-1, -1, False)
-
-        lMesh.AddPolygon(faces[i][0])
-        lMesh.AddPolygon(faces[i][1])
-        lMesh.AddPolygon(faces[i][2])
-
-        lMesh.EndPolygon()
-
-    lNode = FbxNode.Create(pSdkManager, pName)
-    lNode.SetNodeAttribute(lMesh)
-    lNode.SetShadingMode(FbxNode.EShadingMode.eTextureShading)
-    return lNode
+fbxJoints = []
 
 def CreateSkeleton(lSdkManager, joints, bonesHierarchy, pName):
     # Create skeleton root
@@ -39,7 +18,6 @@ def CreateSkeleton(lSdkManager, joints, bonesHierarchy, pName):
     lSkeletonRoot.SetNodeAttribute(lSkeletonRootAttribute)
     lSkeletonRoot.LclTranslation.Set(FbxDouble3(0.0, 0.0, 0.0))
 
-    fbxJoints = []
     for i in range(len(SMPLX_JOINT_NAMES)):
         jointNodeName = SMPLX_JOINT_NAMES[i]
         lSkeletonNodeAttr = FbxSkeleton.Create(lSdkManager, jointNodeName)
@@ -71,14 +49,64 @@ def CreateSkeleton(lSdkManager, joints, bonesHierarchy, pName):
 
     return lSkeletonRoot
 
-def generateFBXfromSMPLX(sdkManager:FbxManager, verts:np.ndarray, faces:np.ndarray, joints:np.ndarray, bonesHierarchy):
+
+def CreateHumanMesh(pSdkManager, verts: np.ndarray, faces: np.ndarray, skinWeights, rootNode, pName):
+    lMesh = FbxMesh.Create(pSdkManager, pName)
+    lMesh.InitControlPoints(verts.shape[0])
+
+    clusters = []
+    for j in range(len(fbxJoints)):
+        clusterToJointNode = FbxCluster.Create(pSdkManager, "")
+        clusterToJointNode.SetLink(fbxJoints[j])
+        clusterToJointNode.SetLinkMode(FbxCluster.ELinkMode.eTotalOne)
+        clusters.append(clusterToJointNode)
+
+    for i in range(verts.shape[0]):
+        point = FbxVector4(verts[i][0], verts[i][1], verts[i][2]) * fbxExportScale
+        lMesh.SetControlPointAt(point, i)
+        for j in range(len(fbxJoints)):
+            clusters[j].AddControlPointIndex(i, skinWeights[i][j])
+
+    for i in range(faces.shape[0]):
+        lMesh.BeginPolygon(-1, -1, False)
+
+        lMesh.AddPolygon(faces[i][0])
+        lMesh.AddPolygon(faces[i][1])
+        lMesh.AddPolygon(faces[i][2])
+
+        lMesh.EndPolygon()
+
+    lNode = FbxNode.Create(pSdkManager, pName)
+    lNode.SetNodeAttribute(lMesh)
+    lNode.SetShadingMode(FbxNode.EShadingMode.eTextureShading)
+
+    # transform link
+    lGlobalMatrix = FbxAMatrix()
+    lXMatrix = FbxAMatrix()
+    lScene = rootNode.GetScene()
+    if lScene:
+        lGlobalMatrix = lScene.GetAnimationEvaluator().GetNodeGlobalTransform(lNode)
+        for j in range(len(clusters)):
+            clusters[j].SetTransformMatrix(lGlobalMatrix)
+            lXMatrix = lScene.GetAnimationEvaluator().GetNodeGlobalTransform(fbxJoints[j])
+            clusters[j].SetTransformLinkMatrix(lXMatrix)
+
+    # add skin
+    lSkin = FbxSkin.Create(pSdkManager, "")
+    for j in range(len(clusters)):
+        lSkin.AddCluster(clusters[j])
+    lNode.GetNodeAttribute().AddDeformer(lSkin)
+
+    return lNode
+
+def generateFBXfromSMPLX(sdkManager:FbxManager, verts:np.ndarray, faces:np.ndarray, skinWeights, joints:np.ndarray, bonesHierarchy):
     lScene = FbxScene.Create(sdkManager, "")
     lRootNode = lScene.GetRootNode()
 
-    chelik = CreateHumanMesh(sdkManager, verts, faces, "Human")
-    lRootNode.AddChild(chelik)
-
     lSkeletonRoot = CreateSkeleton(sdkManager, joints, bonesHierarchy, "Skeleton")
     lRootNode.AddChild(lSkeletonRoot)
+
+    chelik = CreateHumanMesh(sdkManager, verts, faces, skinWeights, lRootNode, "Human")
+    lRootNode.AddChild(chelik)
 
     return lScene

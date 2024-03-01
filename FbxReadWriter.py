@@ -111,6 +111,7 @@ class FbxReadWrite(object):
     def writeFbx(self, scene: FbxScene, write_path:str):
         print ("Writing to {}".format(write_path))
         lResult = SaveScene(self.lSdkManager, scene, write_path, -1, True)
+        print("FBX export success")
         if lResult == False:
             raise Exception("Failed to write to {}".format(write_path))
 
