@@ -41,7 +41,7 @@ if __name__ == "__main__":
     smplxDwarfParams = SmplxParamsObject(input_pkl_dwarf)
 
     try:
-        fbxReadWrite = FbxReadWrite(fbx_source_path)
+        fbxReadWrite = FbxReadWrite() #arg: fbx_source_path
 
         smplxBodyModel = loadSMPLXBodyModel(smplxParams)
 

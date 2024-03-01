@@ -5,7 +5,7 @@ import numpy as np
 from FbxCommon import *
 
 class FbxReadWrite(object):
-    def __init__(self, fbx_source_path):
+    def __init__(self):
         # Prepare the FBX SDK.
         lSdkManager, lScene = InitializeSdkObjects()
         self.lSdkManager = lSdkManager
@@ -13,10 +13,10 @@ class FbxReadWrite(object):
 
         # Load the scene.
         # The example can take a FBX file as an argument.
-        print("\nLoading File: {}".format(fbx_source_path))
-        lResult = LoadScene(self.lSdkManager, self.lScene, fbx_source_path)
-        if not lResult:
-            raise Exception("An error occured while loading the scene :(")
+        #print("\nLoading File: {}".format(fbx_source_path))
+        #lResult = LoadScene(self.lSdkManager, self.lScene, fbx_source_path)
+        #if not lResult:
+        #    raise Exception("An error occured while loading the scene :(")
 
     def _write_curve(self, lCurve:FbxAnimCurve, data:np.ndarray):
         """
