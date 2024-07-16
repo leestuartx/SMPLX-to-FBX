@@ -30,7 +30,9 @@ Readme will be updated with progress.
     |  |--SMPL_m_unityDoubleBlends_lbs_10_scale5_207_v1.0.0.fbx
     |--<output_path>/
     ```
-3. `python3 Convert.py --input_pkl_base <pkl_path> --fbx_source_path <fbx_path>/SMPL_m_unityDoubleBlends_lbs_10_scale5_207_v1.0.0.fbx --output_base <output_path>` to start converting.
+3. Run:
+python Convert.py --input_pkl_base test_data/dwarf.pkl --fbx_source_path fbx_path/SMPL_m_unityDoubleBlends_lbs_10_scale5_207_v1.0.0.fbx --output_base output_path
+ to start converting.
 ## What's inside the pkl file?
 A pkl file contains a dictionary with two keys: `smpl_poses` and `smpl_trans`. There's a sample pkl file in `./Pkls/sample.pkl`.
 * `Dict["smpl_poses"]` : A `(N, 72)` ndarray, where `N` is the frame number.

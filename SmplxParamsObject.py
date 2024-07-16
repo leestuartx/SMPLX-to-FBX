@@ -1,13 +1,4 @@
-import numpy as np
-import glob
-import pickle
-import os
 import joblib
-
-from typing import Dict
-from typing import Tuple
-
-from PathFilter import PathFilter
 
 class SmplxParamsObject(object):
     def __init__(self, read_path):

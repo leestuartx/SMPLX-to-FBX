@@ -1,12 +1,7 @@
-import numpy as np
-import glob
 import pickle
-import os
 
 from typing import Dict
 from typing import Tuple
-
-from PathFilter import PathFilter
 
 class SmplObjects(object):
     joints = ["Pelvis"
